@@ -13,6 +13,8 @@ import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;
 import com.datacoper.locacaoequipamentos.persistence.dao.DAOFactory;
 import com.datacoper.locacaoequipamentos.persistence.dao.LocacaoDAO;
 import com.datacoper.locacaoequipamentos.persistence.dao.jdbc.JdbcDAOFactory;
+import com.datacoper.locacaoequipamentos.persistence.exception.PersistenceException;
+import com.datacoper.locacaoequipamentos.persistence.transaction.ITransaction;
 import com.datacoper.locacaoequipamentos.persistence.transaction.TransactionManagerFactory;
 import com.datacoper.locacaoequipamentos.persistence.transaction.TransactionManagerJdbc;
 
@@ -37,17 +39,50 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 		return clienteDAO;
 	}
+
 	@Override
-	public void gravar(Cliente cliente) {
+	public void gravar(Cliente cliente) throws BusinessException {
+
 		validarDadosObrigatorios(cliente);
-		if (cliente.getIdCliente() == null) {//update
+
+		atualizarIDCliente(cliente);
+
+		ITransaction transaction = TransactionManagerFactory.getTransaction();
+
+		try {
+
+			transaction.beginTransaction();
+			getClienteDAO().insert(cliente);
+			transaction.commit();
+
+		} catch (Exception e) {
+
+			try {
+				transaction.rollback();
+			} catch (PersistenceException e1) {
+				throw new BusinessException();
+			}
+
+			throw new BusinessException(e);
+
+		} finally {
+			try {
+				transaction.closeTransaction();
+			} catch (PersistenceException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void atualizarIDCliente(Cliente cliente) {
+		if (cliente.getIdCliente() == null) {// update
 			Integer idCliente = getClienteDAO().nextId();
 			cliente.setIdCliente(idCliente);
 		}
-		getClienteDAO().insert(cliente);
 	}
 
-	private void validarDadosObrigatorios(Cliente cliente) {
+	private void validarDadosObrigatorios(Cliente cliente) throws BusinessException {
 
 		StringBuilder camposNaoPreenchidos = new StringBuilder();
 		if (cliente.getCpf().matches("(\\d\\d\\.){3}-\\d{2}")) {
@@ -62,9 +97,7 @@ public class ClienteServiceImpl implements ClienteService {
 		// }
 
 		if (camposNaoPreenchidos.length() > 0) {
-			throw new BusinessException(
-					"Os seguintes campos são de preenchimento obrigatório:\n"
-							+ camposNaoPreenchidos);
+			throw new BusinessException("Os seguintes campos são de preenchimento obrigatório:\n" + camposNaoPreenchidos);
 		}
 	}
 

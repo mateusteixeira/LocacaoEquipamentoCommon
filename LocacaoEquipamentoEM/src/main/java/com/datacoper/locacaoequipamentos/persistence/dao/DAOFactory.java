@@ -5,6 +5,8 @@
  */
 package com.datacoper.locacaoequipamentos.persistence.dao;
 
+import java.sql.Connection;
+
 import com.datacoper.locacaoequipamentos.persistence.dao.jdbc.JdbcDAOFactory;
 import com.datacoper.locacaoequipamentos.util.ConfiguracaoSistema;
 import com.datacoper.locacaoequipamentos.util.ParametrosEnum;
@@ -38,5 +40,5 @@ public abstract class DAOFactory  {
         String persistenceType = ConfiguracaoSistema.getValorConfiguracao(ParametrosEnum.PERSISTENCETYPE);
         return persistenceType;
     }
-    
+
 }

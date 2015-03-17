@@ -5,6 +5,8 @@
  */
 package com.datacoper.locacaoequipamentos.persistence.dao;
 
+import java.sql.Connection;
+
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 
 /**
@@ -16,6 +18,7 @@ public interface ClienteDAO {
     public void insert(Cliente cliente);
     
     public Integer nextId();
+    
 
 //    public List<Cliente> buscaAll(int ordem, int ascDesc);
 //

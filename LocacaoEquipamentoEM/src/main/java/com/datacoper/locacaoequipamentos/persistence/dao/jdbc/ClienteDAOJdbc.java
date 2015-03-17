@@ -7,11 +7,7 @@ package com.datacoper.locacaoequipamentos.persistence.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
-import org.apache.commons.dbutils.QueryRunner;
 
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;

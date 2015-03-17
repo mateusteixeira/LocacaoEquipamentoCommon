@@ -20,7 +20,7 @@ import java.util.Map;
 public class JdbcDAOFactory extends DAOFactory {
 
 	private static Map<Class, Class> mapa = new HashMap<>();
-
+	private Connection connection;
 	static {
 		mapa.put(ClienteDAO.class, ClienteDAOJdbc.class);
 		mapa.put(LocacaoDAO.class, LocacaoDAOJdbc.class);
@@ -29,11 +29,10 @@ public class JdbcDAOFactory extends DAOFactory {
 	@Override
 	public <T> T createDAO(Class<T> interfaceDaoClass) {
 		Class<T> daoClass = mapa.get(interfaceDaoClass);
-		Connection connection = ConnectionController.getInstance()
+		connection = ConnectionController.getInstance()
 				.getConnection();
 		try {
-			// return (T)
-			// ClienteDAO.class.getConstructor(Connection.class).newInstance(connection);
+			
 			return daoClass.getConstructor(Connection.class).newInstance(
 					connection);
 		} catch (Exception ex) {
@@ -42,5 +41,11 @@ public class JdbcDAOFactory extends DAOFactory {
 		}
 
 	}
+
+	public Connection getConnection() {
+		return connection;
+	}
+
+	
 
 }

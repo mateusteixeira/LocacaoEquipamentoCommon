@@ -9,23 +9,15 @@ import com.datacoper.locacaoequipamentos.util.ParametrosEnum;
 
 public abstract class TransactionManagerFactory {
 
-	private static TransactionManagerFactory transactionManagerFactory;
 
 	protected TransactionManagerFactory() {
 	}
 
-	public static <T> TransactionManagerFactory startTransaction(T dao) {
+	public static ITransaction getTransaction( ) {
 		String persistenceType = getPersistenceType();
 		if (persistenceType.equals("JDBC")) {
-			JdbcDAOFactory jdbcDAOFactory = (JdbcDAOFactory) dao;
-			transactionManagerFactory = new TransactionManagerJdbc();
-//			transactionManagerFactory.setConnection(jdbcDAOFactory
-//					.getConnection());
-			try {
-				transactionManagerFactory.getConnection().setAutoCommit(false);
-			} catch (SQLException e) {
-			}
-			return transactionManagerFactory;
+			TransactionManagerJdbc transactionManagerJdbc = new TransactionManagerJdbc();
+			return transactionManagerJdbc;
 		} else if (persistenceType.equals("JPA")) {
 		}
 		return null;
@@ -37,38 +29,6 @@ public abstract class TransactionManagerFactory {
 		return persistenceType;
 	}
 
-	abstract void setConnection(Connection connection);
 
-	abstract Connection getConnection();
-
-	public void commit() {
-		String persistenceType = getPersistenceType();
-		if (persistenceType.equals("JDBC")) {
-			try {
-				transactionManagerFactory.getConnection().commit();
-				transactionManagerFactory.getConnection().setAutoCommit(true);
-			} catch (SQLException e) {
-				throw new RuntimeException(
-						"Erro commit - TransactionManagerFactory", e);
-			}
-
-		} else if (persistenceType.equals("JPA")) {
-		}
-	}
-
-	public void rollBack() {
-		String persistenceType = getPersistenceType();
-		if (persistenceType.equals("JDBC")) {
-			try {
-				transactionManagerFactory.getConnection().rollback();
-				transactionManagerFactory.getConnection().setAutoCommit(true);
-			} catch (SQLException e) {
-				throw new RuntimeException(
-						"Erro commit - TransactionManagerFactory", e);
-			}
-
-		} else if (persistenceType.equals("JPA")) {
-		}
-	}
 
 }
