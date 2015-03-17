@@ -7,6 +7,7 @@ package com.datacoper.locacaoequipamentos.common.service;
 
 import java.util.List;
 
+import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.model.Locacao;
 
@@ -16,7 +17,7 @@ import com.datacoper.locacaoequipamentos.common.model.Locacao;
  */
 public interface ClienteService {
 
-    void gravar(Cliente cliente);
+    void gravar(Cliente cliente) throws BusinessException;
 
     //boolean updateCliente(Cliente cliente);
 
