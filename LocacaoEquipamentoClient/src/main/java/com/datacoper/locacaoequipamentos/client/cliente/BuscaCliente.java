@@ -20,12 +20,10 @@ public final class BuscaCliente extends javax.swing.JFrame {
     List<Cliente> lista = new ArrayList<Cliente>();
     int item = 0;
     String op;
-    CadastroCliente cadastroCliente;
 
     public BuscaCliente(String entrada, CadastroCliente cadCliente) {
         initComponents();
         setLocationRelativeTo(null);
-        this.cadastroCliente = cadCliente;
         atualizaClientesAll();
         op = entrada;
     }
