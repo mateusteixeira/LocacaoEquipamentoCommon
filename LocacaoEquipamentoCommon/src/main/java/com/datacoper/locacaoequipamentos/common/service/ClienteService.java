@@ -15,6 +15,7 @@ import com.datacoper.locacaoequipamentos.common.model.Locacao;
  *
  * @author Java
  */
+
 public interface ClienteService {
 
     void gravar(Cliente cliente) throws BusinessException;
@@ -23,8 +24,10 @@ public interface ClienteService {
 
 //    void excluir(Cliente cliente);
 //
-//    List<Cliente> encontrarTodosClientes();
-//
+    List<Cliente> encontrarTodosClientes();
+
+	List<Cliente> encontrarClienteEsp();
+
 //    List<Cliente> buscaClienteAll(int ordem, int ascDesc);
 //
 //    List<Cliente> buscaClienteEsp(int ordem, int ascDesc, int id, String cont);
