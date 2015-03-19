@@ -19,7 +19,9 @@ public interface ClienteDAO {
     
     public Integer nextId();
     
-    public List<Cliente> encontrarClientes();
+    public List<Cliente> encontrarClienteAll();
+    
+    public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa);
     
 
 //    public List<Cliente> buscaAll(int ordem, int ascDesc);

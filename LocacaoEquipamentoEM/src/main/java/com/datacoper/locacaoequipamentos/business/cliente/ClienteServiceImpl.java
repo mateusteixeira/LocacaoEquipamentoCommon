@@ -104,15 +104,16 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public List<Cliente> encontrarTodosClientes() {
-		List<Cliente> clientes = getClienteDAO().encontrarClientes();
+		List<Cliente> clientes = getClienteDAO().encontrarClienteAll();
 		return clientes;
 	}
 
 	@Override
-	public List<Cliente> encontrarClienteEsp() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa) {
+		return getClienteDAO().encontrarClienteEsp(campoPesquisar,pesquisa);
 	}
+
+
 
 	// @Override
 	// public boolean excluir(Cliente cliente) {

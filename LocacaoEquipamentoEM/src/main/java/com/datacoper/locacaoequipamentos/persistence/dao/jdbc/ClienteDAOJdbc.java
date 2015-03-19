@@ -92,32 +92,114 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 	}
 
 	@Override
-	public List<Cliente> encontrarClientes() {
-		String sqlSearch = "SELECT idcliente, nome, cpf, telefone FROM cliente";
-		PreparedStatement ps = null;
-		List<Cliente> clientes = new ArrayList<Cliente>();
-		try {
-			ps = connection.prepareStatement(sqlSearch);
-			ResultSet rs = ps.executeQuery();
-			while(rs.next()){
-				Cliente cliente = new Cliente();
-				cliente.setIdCliente(rs.getInt(idCliente));
-				cliente.setNome(rs.getString(nome));
-				cliente.setCpf(rs.getString(cpf));
-				cliente.setTelefone(rs.getString(telefone));
-				clientes.add(cliente);
-			}
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}finally{
-			if(ps != null){
-				closeResource(ps);
-			}
-		}
+	public List<Cliente> encontrarClienteAll() {
+		String sqlSearch = "SELECT * FROM cliente";
+		List<Cliente> clientes = getResult(sqlSearch, Cliente.class);
 		return clientes;
 	}
-	
-	
+
+	@Override
+	public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa) {
+		String tag = null;
+		String operador = null;
+		switch (campoPesquisar) {
+		case 0: {
+			tag = nome;
+			operador = "LIKE";
+			break;
+		}
+		case 1: {
+			tag = idCliente;
+			operador = "=";
+			break;
+		}
+		case 2: {
+			tag = cpf;
+			operador = "LIKE";
+			break;
+		}
+		case 3: {
+			tag = telefone;
+			operador = "LIKE";
+			break;
+		}
+		default: {
+			tag = nome;
+			operador = "LIKE";
+		}
+		}
+
+		String sqlSearch = "SELECT * FROM cliente WHERE UPPER(" + tag + ") " + operador + " UPPER('%" + pesquisa + "%')";
+		System.out.println(sqlSearch);
+		return getResult(sqlSearch, Cliente.class);
+	}
+
+	// public List<Cliente> buscaEsp(int ordem, int ascDesc, String cont) {
+	// String ord, a_d;
+	// switch (ordem) {
+	// case 1:
+	// ord = nome;
+	// break;
+	// case 2:
+	// ord = id;
+	// break;
+	// case 3:
+	// ord = cpf;
+	// break;
+	// case 4:
+	// ord = telefone;
+	// break;
+	// default:
+	// ord = id;
+	// break;
+	// }
+	// switch (ascDesc) {
+	// case 1:
+	// a_d = "ASC";
+	// break;
+	// case 2:
+	// a_d = "DESC";
+	// break;
+	// default:
+	// a_d = "ASC";
+	// break;
+	// }
+	//
+	// ResultSet rs = null, rs2;
+	// switch (ID) {
+	// case 1: { // rs =
+	// FabricaDeConexao.getInstance().pesquisa(
+	// "SELECT to_char(" + datanascimento + ",'dd/MM/yyyy'),to_char(" +
+	// datacadastro + ",'dd/MM/yyyy'), FROM cliente WHERE " + nome + " ~ '"
+	// + cont + "' ORDER BY " + ord + " " + a_d + "");
+	// rs =
+	// ConnectionController.getInstance().pesquisa("SELECT  FROM pessoa WHERE "
+	// + nome + " ~ '" + cont + "' ORDER BY " + ord + " " + a_d + "");
+	// }
+	// break;
+	// case 2: {
+	// rs =
+	// ConnectionController.getInstance().pesquisa("SELECT  FROM pessoa WHERE "
+	// + id + " = " + cont + " ORDER BY " + ord + " " + a_d + "");
+	// }
+	// break;
+	// case 3: {
+	// rs =
+	// ConnectionController.getInstance().pesquisa("SELECT  FROM pessoa WHERE "
+	// + cpf + " ~ '" + cont + "' ORDER BY " + ord + " " + a_d + "");
+	// }
+	// break;
+	// case 4: {
+	// rs =
+	// ConnectionController.getInstance().pesquisa("SELECT  FROM pessoa WHERE "
+	// + telefone + " ~ '" + cont + "' ORDER BY " + ord + " " + a_d + "");
+	// }
+	// break;
+	// default:
+	// System.out.println("Insira um identificador correto, 1-nome, 2-id, 3-cpf, 4-telefone");
+	// break;
+	// }
+	// }
 
 	/*
 	 * public void insert(Cliente cliente) { ResultSet rs2; rs2 =
