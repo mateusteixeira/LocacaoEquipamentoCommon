@@ -11,16 +11,18 @@ import javax.swing.table.TableModel;
 import com.datacoper.locacaoequipamentos.arquitetura.client.FormPadraoPesquisa;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.service.ClienteService;
+import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
 
 public class FormBuscaCliente extends FormPadraoPesquisa {
+
+	private static final long serialVersionUID = 1L;
 
 	private String operation;
 	private ClienteService clienteService;
 	private JComboBox comboBox;
 
-	public FormBuscaCliente(ClienteService cService) {
-		
-		System.out.println(cService.getClass().getName());
+	public FormBuscaCliente() {
+		super();
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class FormBuscaCliente extends FormPadraoPesquisa {
 
 	@Override
 	public void cancelar() {
-		// 
+		//
 
 	}
 
@@ -59,21 +61,26 @@ public class FormBuscaCliente extends FormPadraoPesquisa {
 			temp[3] = cliente.getTelefone();
 			modelo.addRow(temp);
 		}
+		
 		return modelo;
 	}
 
 	@Override
 	public List<Cliente> pesquisar(String pesquisa) {
-		if(clienteService == null){
-			System.out.println("null");
-		}
 		int idPesquisa = 0;
 		if (pesquisa == null || pesquisa.isEmpty()) {
-			return clienteService.encontrarTodosClientes();
+			return getClienteService().encontrarTodosClientes();
 		} else {
 			idPesquisa = comboBox.getSelectedIndex();
-			return clienteService.encontrarClienteEsp();
+			return getClienteService().encontrarClienteEsp();
 		}
+	}
+
+	public ClienteService getClienteService() {
+		if (clienteService == null) {
+			clienteService = new ServiceLocator().loadService(ClienteService.class);
+		}
+		return clienteService;
 	}
 
 }

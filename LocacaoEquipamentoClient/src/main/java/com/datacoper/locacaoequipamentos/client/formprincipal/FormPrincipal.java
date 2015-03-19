@@ -19,6 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
+import com.datacoper.locacaoequipamentos.client.cliente.FormBuscaCliente;
 import com.datacoper.locacaoequipamentos.client.cliente.FormCadastroCliente;
 import com.datacoper.locacaoequipamentos.client.cliente.FormCliente;
 

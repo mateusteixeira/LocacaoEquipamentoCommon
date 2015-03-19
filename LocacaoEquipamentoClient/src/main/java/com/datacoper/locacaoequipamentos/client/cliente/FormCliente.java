@@ -3,24 +3,23 @@ package com.datacoper.locacaoequipamentos.client.cliente;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import static javax.swing.JOptionPane.*;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
 import com.datacoper.locacaoequipamentos.arquitetura.client.FormPadrao;
-import com.datacoper.locacaoequipamentos.arquitetura.client.IAcoes;
+import com.datacoper.locacaoequipamentos.client.util.ViewMethods;
 import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.model.Endereco;
 import com.datacoper.locacaoequipamentos.common.service.ClienteService;
 import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
-
-public class FormCliente extends FormPadrao implements IAcoes {
+public class FormCliente extends FormPadrao {
 
 	private static final long serialVersionUID = 1L;
 
@@ -45,39 +44,26 @@ public class FormCliente extends FormPadrao implements IAcoes {
 	private SimpleDateFormat formatarDate = new SimpleDateFormat("dd/MM/yyyy");
 	private Date date = new Date(System.currentTimeMillis());
 	private ClienteService clienteService;
+	private JPanel panelPessoa;
+	private JPanel panelEndereco;
 
 	public FormCliente() {
 		super();
 		panelDados.setLayout(null);
 		init();
+
 		getClienteService();
-		setDisableComponents();
-		setIAcoes(this);
+		setComponentsDisable();
 	}
 
-	private void setDisableComponents() {
-		idClienteField.setEnabled(false);
-		dataCadastroField.setEnabled(false);
-		nomeClienteField.setEnabled(false);
-		cpfClienteField.setEnabled(false);
-		rgClienteField.setEnabled(false);
-		nascimentoClienteField.setEnabled(false);
-		telefoneClienteField.setEnabled(false);
-		emailClienteField.setEnabled(false);
-		cidadeClienteField.setEnabled(false);
-		ruaClienteField.setEnabled(false);
-		bairroClienteField.setEnabled(false);
-		complementoClienteField.setEnabled(false);
-		numeroClienteField.setEnabled(false);
-		cepClienteField.setEnabled(false);
-		sexoClienteBox.setEnabled(false);
-		estadoCivilClienteBox.setEnabled(false);
-		estadoClienteBox.setEnabled(false);
+	private void setComponentsDisable() {
+		ViewMethods.chaveadorCampos(panelEndereco, false);
+		ViewMethods.chaveadorCampos(panelPessoa, false);
 
 	}
 
 	private void init() {
-		JPanel panelPessoa = new JPanel();
+		panelPessoa = new JPanel();
 		panelPessoa.setBorder(new TitledBorder(null, "Pessoa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelPessoa.setBounds(10, 38, 452, 155);
 		panelDados.add(panelPessoa);
@@ -166,7 +152,7 @@ public class FormCliente extends FormPadrao implements IAcoes {
 		panelPessoa.add(emailClienteField);
 		emailClienteField.setColumns(10);
 
-		JPanel panelEndereco = new JPanel();
+		panelEndereco = new JPanel();
 		panelEndereco.setBorder(new TitledBorder(null, "Endere\u00E7o", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelEndereco.setBounds(10, 204, 452, 107);
 		panelDados.add(panelEndereco);
@@ -250,37 +236,23 @@ public class FormCliente extends FormPadrao implements IAcoes {
 		idClienteField.setBounds(65, 9, 53, 20);
 		panelDados.add(idClienteField);
 		idClienteField.setColumns(10);
+		idClienteField.setEnabled(false);
 
 		JLabel lblDataCadastro = new JLabel("Data Cadastro:");
 		lblDataCadastro.setBounds(130, 12, 82, 16);
 		panelDados.add(lblDataCadastro);
-
 		dataCadastroField = new JTextField();
 		dataCadastroField.setBounds(213, 9, 68, 20);
 		panelDados.add(dataCadastroField);
 		dataCadastroField.setColumns(10);
+		dataCadastroField.setEnabled(false);
 
 	}
 
-	@Override
 	public void novo() {
-
-		nomeClienteField.setEnabled(true);
-		cpfClienteField.setEnabled(true);
-		rgClienteField.setEnabled(true);
-		nascimentoClienteField.setEnabled(true);
-		telefoneClienteField.setEnabled(true);
-		emailClienteField.setEnabled(true);
-		cidadeClienteField.setEnabled(true);
-		ruaClienteField.setEnabled(true);
-		bairroClienteField.setEnabled(true);
-		complementoClienteField.setEnabled(true);
-		numeroClienteField.setEnabled(true);
-		cepClienteField.setEnabled(true);
-		sexoClienteBox.setEnabled(true);
-		estadoCivilClienteBox.setEnabled(true);
-		estadoClienteBox.setEnabled(true);
-
+		super.novo();
+		idClienteField.setEnabled(false);
+		dataCadastroField.setEnabled(false);
 	}
 
 	@Override
@@ -288,31 +260,33 @@ public class FormCliente extends FormPadrao implements IAcoes {
 		try {
 			verificaCamposObrigatorios();
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Campos Faltantes", JOptionPane.ERROR_MESSAGE);
+			showMessageDialog(null, e.getMessage(), "Campos Faltantes", ERROR_MESSAGE);
 		}
-		
+
 		Cliente cliente = obterCliente();
 		try {
 			this.clienteService.gravar(cliente);
-			JOptionPane.showMessageDialog(null, "Cliente cadastrado com sucesso!", "Cadastro", JOptionPane.INFORMATION_MESSAGE);
+			showMessageDialog(null, "Cliente cadastrado com sucesso!", "Cadastro", INFORMATION_MESSAGE);
 			limpaCampos();
 		} catch (BusinessException ex) {
-			JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+			showMessageDialog(null, ex.getMessage(), "Erro", ERROR_MESSAGE);
 			ex.printStackTrace();
 		}
-		
 
 	}
 
-	@Override
 	public void cancelar() {
 		limpaCampos();
-		setDisableComponents();
+		setComponentsDisable();
 	}
 
 	@Override
 	public void localizar() {
-		FormBuscaCliente buscaCliente = new FormBuscaCliente(getClienteService());
+		abrirFormBuscaCliente();
+	}
+
+	private void abrirFormBuscaCliente() {
+		FormBuscaCliente buscaCliente = new FormBuscaCliente();
 		buscaCliente.setVisible(true);
 	}
 
@@ -352,16 +326,15 @@ public class FormCliente extends FormPadrao implements IAcoes {
 			throw new Exception("Campos Obrigatórios faltantes: " + camposFaltantes);
 
 	}
-	
+
 	private void atualizarCliente(Cliente cliente) {
-		
+
 	}
-	
-	
+
 	private Cliente obterCliente() {
 		Date data = new Date();
 		data = nascimentoClienteField.getDate();
-		
+
 		Cliente cliente = new Cliente();
 		cliente.setNome(nomeClienteField.getText());
 		cliente.setCpf(cpfClienteField.getText());
@@ -380,40 +353,43 @@ public class FormCliente extends FormPadrao implements IAcoes {
 		endereco.setCep(cepClienteField.getText());
 		endereco.setEstado(estadoClienteBox.getSelectedItem().toString());
 		cliente.setEndereco(endereco);
-		
+
 		return cliente;
-		
-		
+
 	}
-	
 
 	public void limpaCampos() {
-		nascimentoClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-		telefoneClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-		cpfClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-		cepClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
-		idClienteField.setText(""); 
-		cpfClienteField.setText("");
-		telefoneClienteField.setText("");
-		nomeClienteField.setText("");
-		rgClienteField.setText("");
-		emailClienteField.setText("");
-		dataCadastroField.setText("");
-		cidadeClienteField.setText("");
-		cepClienteField.setText("");
-		ruaClienteField.setText("");
-		complementoClienteField.setText("");
-		numeroClienteField.setText("");
-		bairroClienteField.setText("");
-		dataCadastroField.setText(formatarDate.format(date));
-		sexoClienteBox.setSelectedIndex(0);
-		estadoCivilClienteBox.setSelectedIndex(1);
-		estadoClienteBox.setSelectedIndex(15);
-		bairroClienteField.setText("");
-		nascimentoClienteField.cleanup();
+		ViewMethods.limparCampos(panelEndereco);
+		ViewMethods.limparCampos(panelPessoa);
+		// nascimentoClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
+		// java.awt.Color(153, 153, 153)));
+		// telefoneClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
+		// java.awt.Color(153, 153, 153)));
+		// cpfClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
+		// java.awt.Color(153, 153, 153)));
+		// cepClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
+		// java.awt.Color(153, 153, 153)));
+		// idClienteField.setText("");
+		// cpfClienteField.setText("");
+		// telefoneClienteField.setText("");
+		// nomeClienteField.setText("");
+		// rgClienteField.setText("");
+		// emailClienteField.setText("");
+		// dataCadastroField.setText("");
+		// cidadeClienteField.setText("");
+		// cepClienteField.setText("");
+		// ruaClienteField.setText("");
+		// complementoClienteField.setText("");
+		// numeroClienteField.setText("");
+		// bairroClienteField.setText("");
+		// dataCadastroField.setText(formatarDate.format(date));
+		// sexoClienteBox.setSelectedIndex(0);
+		// estadoCivilClienteBox.setSelectedIndex(1);
+		// estadoClienteBox.setSelectedIndex(15);
+		// bairroClienteField.setText("");
+		// nascimentoClienteField.cleanup();
 	}
-	
-	
+
 	public ClienteService getClienteService() {
 		if (clienteService == null) {
 			clienteService = new ServiceLocator().loadService(ClienteService.class);

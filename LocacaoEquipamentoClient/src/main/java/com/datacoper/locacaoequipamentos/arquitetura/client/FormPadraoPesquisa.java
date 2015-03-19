@@ -20,6 +20,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Component;
+import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
 
@@ -48,6 +49,7 @@ public abstract class FormPadraoPesquisa extends JDialog {
 		panelFundo.setLayout(new BorderLayout(0, 0));
 
 		JPanel panelCampos = new JPanel();
+		panelCampos.setBorder(new TitledBorder(null, "Filtro de Pesquisa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelFundo.add(panelCampos, BorderLayout.NORTH);
 		GridBagLayout gbl_panelCampos = new GridBagLayout();
 		gbl_panelCampos.columnWidths = new int[] { 87, 481 };
@@ -117,14 +119,17 @@ public abstract class FormPadraoPesquisa extends JDialog {
 		panelTable.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBorder(new TitledBorder(null, "Pesquisa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelTable.add(scrollPane);
 
 		table = new JTable(getTableModel(pesquisar(null)));
+		
 		scrollPane.setViewportView(table);
-
 		panelComboBox.add(getComboBox());
-
-		setBounds(0, 0, 600, 311);
+	
+		setSize(820, 460);
+		setResizable(false);
+		setLocationRelativeTo(null);
 		setModal(true);
 
 	}
