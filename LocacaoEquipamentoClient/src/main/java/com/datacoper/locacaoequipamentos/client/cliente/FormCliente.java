@@ -401,4 +401,8 @@ public class FormCliente extends FormPadrao {
 	public void setClienteService(ClienteService clienteService) {
 		this.clienteService = clienteService;
 	}
+	
+	public static void setCliente(Cliente cliente){
+		
+	}
 }

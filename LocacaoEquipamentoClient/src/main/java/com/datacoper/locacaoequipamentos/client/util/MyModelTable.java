@@ -1,82 +1,287 @@
 package com.datacoper.locacaoequipamentos.client.util;
 
+
+
+import java.io.Serializable;
+import java.util.Vector;
+import java.util.Enumeration;
+
 import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
-class MyModelTable extends AbstractTableModel implements TableModelListener {
 
-	protected TableModel base;
+public class MyModelTable extends AbstractTableModel implements Serializable {
 
-	protected int sortColumn;
 
-	protected int[] row;
+    protected Vector    dataVector;
 
-	public MyModelTable(TableModel tm, int sortColumn) {
-		this.base = tm;
-		this.sortColumn = sortColumn;
-		tm.addTableModelListener(this);
-		rebuild();
-	}
+    protected Vector    columnIdentifiers;
 
-	public Class getColumnClass(int c) {
-		return base.getColumnClass(c);
-	}
+    public MyModelTable() {
+        this(0, 0);
+    }
 
-	public int getColumnCount() {
-		return base.getColumnCount();
-	}
+    private static Vector newVector(int size) {
+        Vector v = new Vector(size);
+        v.setSize(size);
+        return v;
+    }
 
-	public String getColumnName(int c) {
-		return base.getColumnName(c);
-	}
+    public MyModelTable(int rowCount, int columnCount) {
+        this(newVector(columnCount), rowCount);
+    }
 
-	public int getRowCount() {
-		return base.getRowCount();
-	}
+  
+    public MyModelTable(Vector columnNames, int rowCount) {
+        setDataVector(newVector(rowCount), columnNames);
+    }
 
-	public Object getValueAt(int r, int c) {
-		return base.getValueAt(row[r], c);
-	}
+    
+    public MyModelTable(Object[] columnNames, int rowCount) {
+        this(convertToVector(columnNames), rowCount);
+    }
 
-	public boolean isCellEditable(int r, int c) {
-		return base.isCellEditable(row[r], c);
-	}
+    
+    public MyModelTable(Vector data, Vector columnNames) {
+        setDataVector(data, columnNames);
+    }
 
-	public void setValueAt(Object value, int r, int c) {
-		base.setValueAt(value, row[r], c); // Notification will cause re-sort
-	}
+    
+    public MyModelTable(Object[][] data, Object[] columnNames) {
+        setDataVector(data, columnNames);
+    }
 
-	public void tableChanged(TableModelEvent event) {
-		rebuild();
-	}
+    public Vector getDataVector() {
+        return dataVector;
+    }
 
-	protected void rebuild() {
-		int size = base.getRowCount();
-		row = new int[size];
-		for (int i = 0; i < size; i++) {
-			row[i] = i;
-		}
-		sort();
-	}
+    private static Vector nonNullVector(Vector v) {
+        return (v != null) ? v : new Vector();
+    }
 
-	protected void sort() { // Sort and notify listeners
-		for (int i = 1; i < row.length; i++) {
-			int j = i;
-			while (j > 0 && compare(j - 1, j) > 0) {
-				int temp = row[j];
-				row[j] = row[j - 1];
-				row[j - 1] = temp;
-				j--;
-			}
-		}
-		fireTableStructureChanged();
-	}
+    
+    public void setDataVector(Vector dataVector, Vector columnIdentifiers) {
+        this.dataVector = nonNullVector(dataVector);
+        this.columnIdentifiers = nonNullVector(columnIdentifiers);
+        justifyRows(0, getRowCount());
+        fireTableStructureChanged();
+    }
 
-	protected int compare(int i, int j) {
-		String s1 = base.getValueAt(row[i], sortColumn).toString();
-		String s2 = base.getValueAt(row[j], sortColumn).toString();
-		return s1.compareTo(s2);
-	}
-}
+    public void setDataVector(Object[][] dataVector, Object[] columnIdentifiers) {
+        setDataVector(convertToVector(dataVector), convertToVector(columnIdentifiers));
+    }
+
+    public void newDataAvailable(TableModelEvent event) {
+        fireTableChanged(event);
+    }
+
+    private void justifyRows(int from, int to) {
+        dataVector.setSize(getRowCount());
+
+        for (int i = from; i < to; i++) {
+            if (dataVector.elementAt(i) == null) {
+                dataVector.setElementAt(new Vector(), i);
+            }
+            ((Vector)dataVector.elementAt(i)).setSize(getColumnCount());
+        }
+    }
+
+    public void newRowsAdded(TableModelEvent e) {
+        justifyRows(e.getFirstRow(), e.getLastRow() + 1);
+        fireTableChanged(e);
+    }
+    
+    public void rowsRemoved(TableModelEvent event) {
+        fireTableChanged(event);
+    }
+
+    public void setNumRows(int rowCount) {
+        int old = getRowCount();
+        if (old == rowCount) {
+            return;
+        }
+        dataVector.setSize(rowCount);
+        if (rowCount <= old) {
+            fireTableRowsDeleted(rowCount, old-1);
+        }
+        else {
+            justifyRows(old, rowCount);
+            fireTableRowsInserted(old, rowCount-1);
+        }
+    }
+
+    public void setRowCount(int rowCount) {
+        setNumRows(rowCount);
+    }
+
+    public void addRow(Vector rowData) {
+        insertRow(getRowCount(), rowData);
+    }
+
+    
+    public void addRow(Object[] rowData) {
+        addRow(convertToVector(rowData));
+    }
+
+  
+    public void insertRow(int row, Vector rowData) {
+        dataVector.insertElementAt(rowData, row);
+        justifyRows(row, row+1);
+        fireTableRowsInserted(row, row);
+    }
+
+   
+    public void insertRow(int row, Object[] rowData) {
+        insertRow(row, convertToVector(rowData));
+    }
+
+    private static int gcd(int i, int j) {
+        return (j == 0) ? i : gcd(j, i%j);
+    }
+
+    private static void rotate(Vector v, int a, int b, int shift) {
+        int size = b - a;
+        int r = size - shift;
+        int g = gcd(size, r);
+        for(int i = 0; i < g; i++) {
+            int to = i;
+            Object tmp = v.elementAt(a + to);
+            for(int from = (to + r) % size; from != i; from = (to + r) % size) {
+                v.setElementAt(v.elementAt(a + from), a + to);
+                to = from;
+            }
+            v.setElementAt(tmp, a + to);
+        }
+    }
+
+    
+    public void moveRow(int start, int end, int to) {
+        int shift = to - start;
+        int first, last;
+        if (shift < 0) {
+            first = to;
+            last = end;
+        }
+        else {
+            first = start;
+            last = to + end - start;
+        }
+        rotate(dataVector, first, last + 1, shift);
+
+        fireTableRowsUpdated(first, last);
+    }
+
+   
+    public void removeRow(int row) {
+        dataVector.removeElementAt(row);
+        fireTableRowsDeleted(row, row);
+    }
+
+
+    public void setColumnIdentifiers(Vector columnIdentifiers) {
+        setDataVector(dataVector, columnIdentifiers);
+    }
+
+  
+    public void setColumnIdentifiers(Object[] newIdentifiers) {
+        setColumnIdentifiers(convertToVector(newIdentifiers));
+    }
+
+  
+    public void setColumnCount(int columnCount) {
+        columnIdentifiers.setSize(columnCount);
+        justifyRows(0, getRowCount());
+        fireTableStructureChanged();
+    }
+
+   
+    public void addColumn(Object columnName) {
+        addColumn(columnName, (Vector)null);
+    }
+
+   
+    public void addColumn(Object columnName, Vector columnData) {
+        columnIdentifiers.addElement(columnName);
+        if (columnData != null) {
+            int columnSize = columnData.size();
+            if (columnSize > getRowCount()) {
+                dataVector.setSize(columnSize);
+            }
+            justifyRows(0, getRowCount());
+            int newColumn = getColumnCount() - 1;
+            for(int i = 0; i < columnSize; i++) {
+                  Vector row = (Vector)dataVector.elementAt(i);
+                  row.setElementAt(columnData.elementAt(i), newColumn);
+            }
+        }
+        else {
+            justifyRows(0, getRowCount());
+        }
+
+        fireTableStructureChanged();
+    }
+
+   
+    public void addColumn(Object columnName, Object[] columnData) {
+        addColumn(columnName, convertToVector(columnData));
+    }
+
+
+    public int getRowCount() {
+        return dataVector.size();
+    }
+
+    
+    public int getColumnCount() {
+        return columnIdentifiers.size();
+    }
+
+    public String getColumnName(int column) {
+        Object id = null;
+        // This test is to cover the case when
+        // getColumnCount has been subclassed by mistake ...
+        if (column < columnIdentifiers.size() && (column >= 0)) {
+            id = columnIdentifiers.elementAt(column);
+        }
+        return (id == null) ? super.getColumnName(column)
+                            : id.toString();
+    }
+
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
+
+    public Object getValueAt(int row, int column) {
+        Vector rowVector = (Vector)dataVector.elementAt(row);
+        return rowVector.elementAt(column);
+    }
+
+    public void setValueAt(Object aValue, int row, int column) {
+        Vector rowVector = (Vector)dataVector.elementAt(row);
+        rowVector.setElementAt(aValue, column);
+        fireTableCellUpdated(row, column);
+    }
+
+    protected static Vector convertToVector(Object[] anArray) {
+        if (anArray == null) {
+            return null;
+        }
+        Vector<Object> v = new Vector<Object>(anArray.length);
+        for (Object o : anArray) {
+            v.addElement(o);
+        }
+        return v;
+    }
+
+    protected static Vector convertToVector(Object[][] anArray) {
+        if (anArray == null) {
+            return null;
+        }
+        Vector<Vector> v = new Vector<Vector>(anArray.length);
+        for (Object[] o : anArray) {
+            v.addElement(convertToVector(o));
+        }
+        return v;
+    }
+
+} // End of class DefaultTableModel
