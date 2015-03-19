@@ -26,7 +26,7 @@ public interface ClienteService {
 //
     List<Cliente> encontrarTodosClientes();
 
-	List<Cliente> encontrarClienteEsp();
+	List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa);
 
 //    List<Cliente> buscaClienteAll(int ordem, int ascDesc);
 //
