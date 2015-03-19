@@ -21,6 +21,7 @@ public class JdbcDAOFactory extends DAOFactory {
 
 	private static Map<Class, Class> mapa = new HashMap<>();
 	private Connection connection;
+	
 	static {
 		mapa.put(ClienteDAO.class, ClienteDAOJdbc.class);
 		mapa.put(LocacaoDAO.class, LocacaoDAOJdbc.class);

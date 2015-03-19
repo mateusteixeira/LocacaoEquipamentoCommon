@@ -52,6 +52,7 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 
 			transaction.beginTransaction();
+			cliente.setIdCliente(50);
 			getClienteDAO().insert(cliente);
 			transaction.commit();
 
@@ -99,6 +100,18 @@ public class ClienteServiceImpl implements ClienteService {
 		if (camposNaoPreenchidos.length() > 0) {
 			throw new BusinessException("Os seguintes campos são de preenchimento obrigatório:\n" + camposNaoPreenchidos);
 		}
+	}
+
+	@Override
+	public List<Cliente> encontrarTodosClientes() {
+		List<Cliente> clientes = getClienteDAO().encontrarClientes();
+		return clientes;
+	}
+
+	@Override
+	public List<Cliente> encontrarClienteEsp() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	// @Override

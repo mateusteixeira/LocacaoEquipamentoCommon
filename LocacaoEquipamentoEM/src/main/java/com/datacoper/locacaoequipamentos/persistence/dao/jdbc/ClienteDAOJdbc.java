@@ -7,7 +7,10 @@ package com.datacoper.locacaoequipamentos.persistence.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;
@@ -24,7 +27,7 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 	static final String nome_dep = "nome";
 	static final String fk_cliente = "fk_cliente";
 	// Nome das colunas do banco (cliente)
-	static final String id = "id";
+	static final String idCliente = "idcliente";
 	static final String nome = "nome";
 	static final String rg = "rg";
 	static final String cpf = "cpf";
@@ -87,6 +90,34 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 	public Integer nextId() {
 		return getNextSequenceValue("idcliente_pk_seq");
 	}
+
+	@Override
+	public List<Cliente> encontrarClientes() {
+		String sqlSearch = "SELECT idcliente, nome, cpf, telefone FROM cliente";
+		PreparedStatement ps = null;
+		List<Cliente> clientes = new ArrayList<Cliente>();
+		try {
+			ps = connection.prepareStatement(sqlSearch);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				Cliente cliente = new Cliente();
+				cliente.setIdCliente(rs.getInt(idCliente));
+				cliente.setNome(rs.getString(nome));
+				cliente.setCpf(rs.getString(cpf));
+				cliente.setTelefone(rs.getString(telefone));
+				clientes.add(cliente);
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}finally{
+			if(ps != null){
+				closeResource(ps);
+			}
+		}
+		return clientes;
+	}
+	
+	
 
 	/*
 	 * public void insert(Cliente cliente) { ResultSet rs2; rs2 =
