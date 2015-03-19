@@ -290,12 +290,12 @@ public final class BuscaCliente extends javax.swing.JFrame {
         String temp[] = new String[4];
         lista.clear();
 //
-//        try {
+        try {
 //            lista = this.cadastroCliente.getClienteService().buscaClienteAll(2, 1);
-//        } catch (Exception ex) {
-//            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-//            Logger.getLogger(BuscaCliente.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(BuscaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         //Joga para tabela
         for (int i = 0; i < lista.size(); i++) {
