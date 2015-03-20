@@ -52,7 +52,6 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 
 			transaction.beginTransaction();
-			cliente.setIdCliente(50);
 			getClienteDAO().insert(cliente);
 			transaction.commit();
 

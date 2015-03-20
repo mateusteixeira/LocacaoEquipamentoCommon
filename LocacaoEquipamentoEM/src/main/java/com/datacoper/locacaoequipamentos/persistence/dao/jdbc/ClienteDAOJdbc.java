@@ -62,8 +62,8 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 			ps.setString(2, cliente.getNome());
 			ps.setString(3, cliente.getRg());
 			ps.setString(4, cliente.getCpf());
-			ps.setString(5, cliente.getEstadoCivil());
-			ps.setString(6, cliente.getSexo());
+			ps.setString(5, String.valueOf(cliente.getEstadoCivil()));
+			ps.setString(6, String.valueOf(cliente.getSexo()));
 			ps.setString(7, cliente.getEmail());
 			ps.setString(8, cliente.getTelefone());
 			ps.setString(9, cliente.getDataNascimento());
