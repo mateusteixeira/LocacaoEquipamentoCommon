@@ -7,13 +7,13 @@ package com.datacoper.locacaoequipamentos.persistence.dao.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;
+import com.datacoper.locacaoequipamentos.vohandler.ClienteEnderecoHandler;
+import com.dc.locacaoequipamentocommon.vo.ClienteEnderecoVO;
 
 /**
  *
@@ -94,8 +94,8 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 	@Override
 	public List<Cliente> encontrarClienteAll() {
 		String sqlSearch = "SELECT * FROM cliente";
-		List<Cliente> clientes = getResult(sqlSearch, Cliente.class);
-		return clientes;
+		List<ClienteEnderecoVO> clientes = getResult(sqlSearch, ClienteEnderecoVO.class);
+		return ClienteEnderecoHandler.getMultipleResult(clientes);
 	}
 
 	@Override
@@ -131,7 +131,63 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 
 		String sqlSearch = "SELECT * FROM cliente WHERE UPPER(" + tag + ") " + operador + " UPPER('%" + pesquisa + "%')";
 		System.out.println(sqlSearch);
-		return getResult(sqlSearch, Cliente.class);
+		List<ClienteEnderecoVO> clientes = getResult(sqlSearch, ClienteEnderecoVO.class);
+		return ClienteEnderecoHandler.getMultipleResult(clientes);
+	}
+
+	@Override
+	public void excluir(Cliente cliente) {
+		String sqlString = "DELETE FROM cliente WHERE " + idCliente + " = " + cliente.getIdCliente();
+		System.out.println(sqlString);
+		PreparedStatement ps = null;
+		try {
+			ps = connection.prepareStatement(sqlString);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (ps != null)
+				closeResource(ps);
+		}
+
+	}
+
+	@Override
+	public void update(Cliente cliente) {
+		
+		String insertSQL = "UPDATE cliente SET nome = ?, rg = ?, cpf = ?, estadocivil= ?, sexo= ?, email= ?, telefone= ?, datanascimento= ?, datacadastro= ?, "
+				+ "estado= ?, cidade= ?, rua= ?, bairro= ?, cep= ?, numero= ?, complemento= ? WHERE idcliente = " + cliente.getIdCliente();
+
+		
+		PreparedStatement ps = null;
+		try {
+			ps = connection.prepareStatement(insertSQL);
+			ps.setString(1, cliente.getNome());
+			ps.setString(2, cliente.getRg());
+			ps.setString(3, cliente.getCpf());
+			ps.setString(4, String.valueOf(cliente.getEstadoCivil()));
+			ps.setString(5, String.valueOf(cliente.getSexo()));
+			ps.setString(6, cliente.getEmail());
+			ps.setString(7, cliente.getTelefone());
+			ps.setString(8, cliente.getDataNascimento());
+			ps.setString(9, cliente.getDataCadastro());
+			ps.setString(10, cliente.getEndereco().getEstado());
+			ps.setString(11, cliente.getEndereco().getCidade());
+			ps.setString(12, cliente.getEndereco().getRua());
+			ps.setString(13, cliente.getEndereco().getBairro());
+			ps.setString(14, cliente.getEndereco().getCep());
+			ps.setInt(15, cliente.getEndereco().getNumero());
+			ps.setString(16, cliente.getEndereco().getComplemento());
+			System.out.println(ps.toString());
+			ps.executeUpdate();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (ps != null)
+				closeResource(ps);
+		}
+
 	}
 
 	// public List<Cliente> buscaEsp(int ordem, int ascDesc, String cont) {

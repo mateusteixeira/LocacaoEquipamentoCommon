@@ -45,14 +45,16 @@ public class ClienteServiceImpl implements ClienteService {
 
 		validarDadosObrigatorios(cliente);
 
-		atualizarIDCliente(cliente);
-
 		ITransaction transaction = TransactionManagerFactory.getTransaction();
 
 		try {
-
 			transaction.beginTransaction();
-			getClienteDAO().insert(cliente);
+			if (cliente.getIdCliente() == null) {// update
+				atualizarIDCliente(cliente);
+				getClienteDAO().insert(cliente);
+			} else {
+				getClienteDAO().update(cliente);
+			}
 			transaction.commit();
 
 		} catch (Exception e) {
@@ -76,10 +78,8 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	private void atualizarIDCliente(Cliente cliente) {
-		if (cliente.getIdCliente() == null) {// update
-			Integer idCliente = getClienteDAO().nextId();
-			cliente.setIdCliente(idCliente);
-		}
+		Integer idCliente = getClienteDAO().nextId();
+		cliente.setIdCliente(idCliente);
 	}
 
 	private void validarDadosObrigatorios(Cliente cliente) throws BusinessException {
@@ -109,10 +109,39 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa) {
-		return getClienteDAO().encontrarClienteEsp(campoPesquisar,pesquisa);
+		return getClienteDAO().encontrarClienteEsp(campoPesquisar, pesquisa);
 	}
 
+	@Override
+	public void excluir(Cliente cliente) throws BusinessException {
 
+		ITransaction transaction = TransactionManagerFactory.getTransaction();
+
+		try {
+
+			transaction.beginTransaction();
+			getClienteDAO().excluir(cliente);
+			transaction.commit();
+
+		} catch (Exception e) {
+
+			try {
+				transaction.rollback();
+			} catch (PersistenceException e1) {
+				throw new BusinessException();
+			}
+
+			throw new BusinessException(e);
+
+		} finally {
+			try {
+				transaction.closeTransaction();
+			} catch (PersistenceException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 	// @Override
 	// public boolean excluir(Cliente cliente) {

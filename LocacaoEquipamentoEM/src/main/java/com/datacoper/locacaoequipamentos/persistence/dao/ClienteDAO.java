@@ -23,6 +23,9 @@ public interface ClienteDAO {
     
     public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa);
     
+    public void excluir(Cliente excluir);
+
+	public void update(Cliente cliente);
 
 //    public List<Cliente> buscaAll(int ordem, int ascDesc);
 //

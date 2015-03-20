@@ -47,7 +47,6 @@ public class ConnectionController {
         } catch (SQLException ex) {
             throw new RuntimeException("Conexão com banco não efetuada!", ex);
         }
-
     }
     
     public Connection getConnection() {
