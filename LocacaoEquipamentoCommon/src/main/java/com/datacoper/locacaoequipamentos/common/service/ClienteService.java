@@ -18,20 +18,22 @@ import com.datacoper.locacaoequipamentos.common.model.Locacao;
 
 public interface ClienteService {
 
-    void gravar(Cliente cliente) throws BusinessException;
+	void gravar(Cliente cliente) throws BusinessException;
 
-    //boolean updateCliente(Cliente cliente);
+	// boolean updateCliente(Cliente cliente);
 
-//    void excluir(Cliente cliente);
-//
-    List<Cliente> encontrarTodosClientes();
+	void excluir(Cliente cliente) throws BusinessException;
+
+	//
+	List<Cliente> encontrarTodosClientes();
 
 	List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa);
 
-//    List<Cliente> buscaClienteAll(int ordem, int ascDesc);
-//
-//    List<Cliente> buscaClienteEsp(int ordem, int ascDesc, int id, String cont);
-//
-//    /////VER SE PRECISO CRIAR OUTRA INTERFACE PARA LOCACAO
-//    List<Locacao> encontrarTodasLocacoes();
+	// List<Cliente> buscaClienteAll(int ordem, int ascDesc);
+	//
+	// List<Cliente> buscaClienteEsp(int ordem, int ascDesc, int id, String
+	// cont);
+	//
+	// /////VER SE PRECISO CRIAR OUTRA INTERFACE PARA LOCACAO
+	// List<Locacao> encontrarTodasLocacoes();
 }
