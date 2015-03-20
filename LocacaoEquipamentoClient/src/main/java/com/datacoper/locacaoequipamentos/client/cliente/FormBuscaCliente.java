@@ -10,7 +10,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
-import com.datacoper.locacaoequipamentos.arquitetura.client.FormPadraoPesquisa;
+import com.datacoper.locacaoequipamentos.client.formspadrao.FormPadraoPesquisa;
 import com.datacoper.locacaoequipamentos.client.tablemodel.MyModelTable;
 import com.datacoper.locacaoequipamentos.client.tablemodel.TableModelCliente;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
@@ -30,15 +30,14 @@ public class FormBuscaCliente extends FormPadraoPesquisa {
 		super();
 	}
 
-	@Override
-	public void ok() {
 
+	public void ok() {
+		super.ok();
 	}
 
-	@Override
-	public void cancelar() {
-		//
 
+	public void cancelar() {
+		super.cancelar();
 	}
 
 	@Override

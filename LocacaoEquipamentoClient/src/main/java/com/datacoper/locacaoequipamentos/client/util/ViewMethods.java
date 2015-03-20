@@ -20,7 +20,7 @@ import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import com.datacoper.locacaoequipamentos.client.cliente.FormCliente;
+import com.datacoper.locacaoequipamentos.client.cliente.FormCadastroCliente;
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 

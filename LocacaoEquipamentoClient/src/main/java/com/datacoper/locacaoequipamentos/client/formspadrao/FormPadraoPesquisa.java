@@ -1,4 +1,4 @@
-package com.datacoper.locacaoequipamentos.arquitetura.client;
+package com.datacoper.locacaoequipamentos.client.formspadrao;
 
 import javax.swing.JFrame;
 
@@ -66,31 +66,33 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		panelCampos.setBorder(new TitledBorder(null, "Filtro de Pesquisa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelFundo.add(panelCampos, BorderLayout.NORTH);
 		GridBagLayout gbl_panelCampos = new GridBagLayout();
-		gbl_panelCampos.columnWidths = new int[] { 87, 481 };
+		gbl_panelCampos.columnWidths = new int[] { 82, 481 };
 		gbl_panelCampos.rowHeights = new int[] { 28, 20 };
-		gbl_panelCampos.columnWeights = new double[] { 0.0, 0.0 };
+		gbl_panelCampos.columnWeights = new double[] { 0.0, 1.0 };
 		gbl_panelCampos.rowWeights = new double[] { 0.0, 0.0 };
 		panelCampos.setLayout(gbl_panelCampos);
 
 		JLabel lblPesquisarPor = new JLabel("Pesquisar por:");
-		lblPesquisarPor.setPreferredSize(new Dimension(40, 14));
+		lblPesquisarPor.setPreferredSize(new Dimension(80, 14));
 		lblPesquisarPor.setAlignmentX(Component.CENTER_ALIGNMENT);
 		GridBagConstraints gbc_lblPesquisarPor = new GridBagConstraints();
+		gbc_lblPesquisarPor.anchor = GridBagConstraints.WEST;
 		gbc_lblPesquisarPor.ipady = 2;
 		gbc_lblPesquisarPor.ipadx = 2;
-		gbc_lblPesquisarPor.anchor = GridBagConstraints.EAST;
-		gbc_lblPesquisarPor.fill = GridBagConstraints.BOTH;
+		gbc_lblPesquisarPor.fill = GridBagConstraints.VERTICAL;
 		gbc_lblPesquisarPor.insets = new Insets(0, 0, 5, 5);
 		gbc_lblPesquisarPor.gridx = 0;
 		gbc_lblPesquisarPor.gridy = 0;
 		panelCampos.add(lblPesquisarPor, gbc_lblPesquisarPor);
 
 		panelComboBox = new JPanel();
+		panelComboBox.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelComboBox.setBackground(UIManager.getColor("control"));
 		panelComboBox.setSize(new Dimension(50, 50));
-		panelComboBox.setPreferredSize(new Dimension(80, 10));
+		panelComboBox.setPreferredSize(new Dimension(300, 20));
 		GridBagConstraints gbc_panelComboBox = new GridBagConstraints();
-		gbc_panelComboBox.fill = GridBagConstraints.BOTH;
+		gbc_panelComboBox.anchor = GridBagConstraints.WEST;
+		gbc_panelComboBox.fill = GridBagConstraints.VERTICAL;
 		gbc_panelComboBox.insets = new Insets(0, 0, 5, 0);
 		gbc_panelComboBox.gridx = 1;
 		gbc_panelComboBox.gridy = 0;
@@ -116,10 +118,16 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		btnOk.setPreferredSize(new Dimension(75, 23));
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ok();
 			}
 		});
 
 		btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelar();
+			}
+		});
 		panelButtons.add(btnCancelar);
 		panelButtons.add(btnOk);
 
@@ -150,6 +158,7 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		// sorter.setSortKeys(sortKeys);
 
 		scrollPane.setViewportView(table);
+		
 		panelComboBox.add(getComboBox());
 
 		FieldPesquisa.addKeyListener(new KeyAdapter() {
@@ -177,13 +186,17 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 	private ButtonGroup buttonGroup;
 	private JPanel panelComboBox;
 
-	public abstract void ok();
+	public void ok() {
+		dispose();
+	}
 
-	public abstract void cancelar();
+	public void cancelar() {
+		dispose();
+	}
 
 	public T getSelectedRow(int selectedRow) {
-		
-		return (T)((MyModelTable) table.getModel()).get(selectedRow);
+
+		return (T) ((MyModelTable) table.getModel()).get(selectedRow);
 	}
 
 	public abstract JComboBox getComboBox();

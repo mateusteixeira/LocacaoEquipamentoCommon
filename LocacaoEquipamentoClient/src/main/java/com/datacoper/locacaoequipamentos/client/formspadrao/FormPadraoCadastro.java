@@ -1,4 +1,4 @@
-package com.datacoper.locacaoequipamentos.arquitetura.client;
+package com.datacoper.locacaoequipamentos.client.formspadrao;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -10,10 +10,10 @@ import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import com.datacoper.locacaoequipamentos.client.cliente.FormCliente;
+import com.datacoper.locacaoequipamentos.client.cliente.FormCadastroCliente;
 import com.datacoper.locacaoequipamentos.client.util.ViewMethods;
 
-public abstract class FormPadrao extends JInternalFrame {
+public abstract class FormPadraoCadastro extends JInternalFrame {
 
 	private static final long serialVersionUID = 1L;
 	protected JPanel panelDados;
@@ -25,7 +25,7 @@ public abstract class FormPadrao extends JInternalFrame {
 	private JButton btnLimpar;
 	private JButton btnExcluir;
 
-	public FormPadrao() {
+	public FormPadraoCadastro() {
 
 		initComponents();
 	}
@@ -83,6 +83,11 @@ public abstract class FormPadrao extends JInternalFrame {
 		panel.add(btnLocalizar);
 
 		btnExcluir = new JButton("Excluir");
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				excluir();
+			}
+		});
 		btnExcluir.setBounds(2, 187, 87, 23);
 		panel.add(btnExcluir);
 
@@ -109,20 +114,50 @@ public abstract class FormPadrao extends JInternalFrame {
 		btnLimpar.setEnabled(true);
 		btnLocalizar.setEnabled(false);
 		btnExcluir.setEnabled(false);
+		btnNovo.setEnabled(false);
+
 	}
 
-	public abstract void gravar();
+	public void gravar() {
+		ViewMethods.limparCampos(panelDados);
+		ViewMethods.chaveadorCampos(this.panelDados, false);
+		btnGravar.setEnabled(false);
+		btnLimpar.setEnabled(false);
+		btnCancelar.setEnabled(false);
+		btnLocalizar.setEnabled(true);
+		btnNovo.setEnabled(true);
+		btnExcluir.setEnabled(false);
+	}
 
 	public void cancelar() {
 		ViewMethods.limparCampos(panelDados);
 		ViewMethods.chaveadorCampos(this.panelDados, false);
+		btnGravar.setEnabled(false);
+		btnLimpar.setEnabled(false);
+		btnCancelar.setEnabled(false);
+		btnNovo.setEnabled(true);
+		btnLocalizar.setEnabled(true);
+		btnExcluir.setEnabled(false);
 	}
 
-	public abstract void localizar();
+	public void localizar() {
+		btnGravar.setEnabled(true);
+		btnExcluir.setEnabled(true);
+		btnCancelar.setEnabled(true);
+		btnNovo.setEnabled(false);
+	}
 
 	public abstract void limparCampos();
 
-	public abstract void habilitarCampos();
-	
-	public abstract void excluir();
+
+	public void excluir() {
+		ViewMethods.limparCampos(panelDados);
+		ViewMethods.chaveadorCampos(this.panelDados, false);
+		btnNovo.setEnabled(true);
+		btnGravar.setEnabled(false);
+		btnCancelar.setEnabled(false);
+		btnLocalizar.setEnabled(true);
+		btnLimpar.setEnabled(false);
+		btnExcluir.setEnabled(false);
+	}
 }

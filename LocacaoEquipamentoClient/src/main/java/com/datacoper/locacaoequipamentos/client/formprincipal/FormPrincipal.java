@@ -17,11 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.EmptyBorder;
 
-import com.datacoper.locacaoequipamentos.client.cliente.FormBuscaCliente;
 import com.datacoper.locacaoequipamentos.client.cliente.FormCadastroCliente;
-import com.datacoper.locacaoequipamentos.client.cliente.FormCliente;
 
 public class FormPrincipal extends JFrame {
 
@@ -78,7 +75,7 @@ public class FormPrincipal extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Clientes");
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JInternalFrame ji = new FormCliente();
+				JInternalFrame ji = new FormCadastroCliente();
 				ji.setVisible(false);
 				desktopPane.add(ji);
 
@@ -94,6 +91,28 @@ public class FormPrincipal extends JFrame {
 		});
 		mnNewMenu.add(mntmNewMenuItem);
 
-	}
+		JMenu mnConsultas = new JMenu("Consultas");
+		menuBar.add(mnConsultas);
 
+		JMenuItem mntmClientes = new JMenuItem("Clientes");
+		mntmClientes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JInternalFrame ji = new FormCadastroCliente();
+				((FormCadastroCliente) ji).abrirFormBuscaCliente();
+				((FormCadastroCliente) ji).habilitarCampos();
+				ji.setVisible(false);
+				desktopPane.add(ji);
+
+				try {
+					ji.setMaximum(true);
+				} catch (PropertyVetoException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				ji.setVisible(true);
+			}
+		});
+		mnConsultas.add(mntmClientes);
+
+	}
 }
