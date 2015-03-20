@@ -5,6 +5,9 @@
  */
 package com.datacoper.locacaoequipamentos.common.model;
 
+import com.datacoper.locacaoequipamentos.common.model.enums.EstadoCivil;
+import com.datacoper.locacaoequipamentos.common.model.enums.Sexo;
+
 /**
  *
  * @author Java
@@ -15,8 +18,8 @@ public class Pessoa {
 	private String nome;
 	private String rg;
 	private String cpf;
-	private String estadoCivil;
-	private String sexo;
+	private EstadoCivil estadoCivil;
+	private Sexo sexo;
 	private String email;
 	private String telefone;
 	private String dataNascimento;
@@ -51,19 +54,19 @@ public class Pessoa {
 		this.cpf = cpf;
 	}
 
-	public String getEstadoCivil() {
+	public EstadoCivil getEstadoCivil() {
 		return estadoCivil;
 	}
 
-	public void setEstadoCivil(String estadoCivil) {
+	public void setEstadoCivil(EstadoCivil estadoCivil) {
 		this.estadoCivil = estadoCivil;
 	}
 
-	public String getSexo() {
+	public Sexo getSexo() {
 		return sexo;
 	}
 
-	public void setSexo(String sexo) {
+	public void setSexo(Sexo sexo) {
 		this.sexo = sexo;
 	}
 
