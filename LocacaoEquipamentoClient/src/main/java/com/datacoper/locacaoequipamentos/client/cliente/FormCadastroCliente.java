@@ -19,6 +19,8 @@ import javax.swing.border.TitledBorder;
 import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.model.Endereco;
+import com.datacoper.locacaoequipamentos.common.model.enums.EstadoCivil;
+import com.datacoper.locacaoequipamentos.common.model.enums.Sexo;
 import com.datacoper.locacaoequipamentos.common.service.ClienteService;
 import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
 
@@ -261,8 +263,10 @@ public class FormCadastroCliente extends JInternalFrame {
 	}
 
 	protected void adicionarAction() {
-		String cpf, telefone, nome, rg, sexo, estadoCivil, dataCadastro, dataNascimento, email = null;
+		String cpf, telefone, nome, rg, dataCadastro, dataNascimento, email = null;
 		String cidade, rua, bairro, estado, cep, complemento = null;
+		Sexo sexo;
+		EstadoCivil estadoCivil;
 		int numero, id = 0;
 		Cliente c = new Cliente();
 		Date data = new Date();
@@ -286,8 +290,8 @@ public class FormCadastroCliente extends JInternalFrame {
 			nome = nomeClienteField.getText();
 			rg = rgClienteField.getText();
 			email = emailClienteField.getText();
-			sexo = (String) sexoClienteBox.getSelectedItem();
-			estadoCivil = (String) estadoCivilClienteBox.getSelectedItem();
+			sexo = (Sexo) sexoClienteBox.getSelectedItem();
+			estadoCivil = (EstadoCivil) estadoCivilClienteBox.getSelectedItem();
 			dataCadastro = formatarDate.format(date);
 			cidade = cidadeClienteField.getText();
 			rua = ruaClienteField.getText();

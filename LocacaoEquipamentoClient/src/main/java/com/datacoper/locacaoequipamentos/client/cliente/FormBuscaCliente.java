@@ -11,7 +11,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import com.datacoper.locacaoequipamentos.arquitetura.client.FormPadraoPesquisa;
-import com.datacoper.locacaoequipamentos.client.util.MyModelTable;
+import com.datacoper.locacaoequipamentos.client.tablemodel.MyModelTable;
+import com.datacoper.locacaoequipamentos.client.tablemodel.TableModelCliente;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.service.ClienteService;
 import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
@@ -50,34 +51,22 @@ public class FormBuscaCliente extends FormPadraoPesquisa {
 	}
 
 	@Override
-	public TableModel getTableModel() {
+	public TableModel getTableModel(List listaClientes) {
 
-		MyModelTable modelo = new MyModelTable();
-		Object columnNames[] = new Object[] { "Nome", "Código", "CPF", "Telefone" };
-		modelo.setColumnIdentifiers(columnNames);
-		modelo.setNumRows(0);
-		Object temp[] = new Object[4];
-		for (Object c : listaClientes) {
-			Cliente cliente = (Cliente) c;
-			System.out.println("codigo = " + cliente.getIdCliente());
-			temp[0] = cliente.getNome();
-			temp[1] = cliente.getIdCliente();
-			temp[2] = cliente.getCpf();
-			temp[3] = cliente.getTelefone();
-			modelo.addRow(temp);
-		}
-
-		return modelo;
+		TableModel tableModel = new TableModelCliente(listaClientes);
+		return tableModel;
 	}
 
 	@Override
-	public void pesquisar(String pesquisa) {
+	public List<Cliente> pesquisar(String pesquisa) {
 		if (pesquisa == null || pesquisa.isEmpty()) {
-			listaClientes = new ArrayList<Cliente>();
-			listaClientes = getClienteService().encontrarTodosClientes();
+			List<Cliente> l = getClienteService().encontrarTodosClientes();
+			for (Cliente cliente : l) {
+				System.out.println("Sexo = " + cliente.getSexo().getDescricao());
+			}
+			return l;
 		} else {
-			listaClientes = new ArrayList<Cliente>();
-			listaClientes = getClienteService().encontrarClienteEsp(comboBox.getSelectedIndex(), pesquisa);
+			return getClienteService().encontrarClienteEsp(comboBox.getSelectedIndex(), pesquisa);
 		}
 	}
 
@@ -88,9 +77,10 @@ public class FormBuscaCliente extends FormPadraoPesquisa {
 		return clienteService;
 	}
 
-	@Override
-	public void getSelectedRow(int selectedRow) {
-		FormCliente.setCliente(listaClientes.get(selectedRow));
-	}
+	// @Override
+	// public void getSelectedRow(int selectedRow, TableModel model) {
+	// Cliente cliente = (Cliente)
+	// FormCliente.setCliente(listaClientes.get(selectedRow));
+	// }
 
 }

@@ -43,12 +43,14 @@ import javax.swing.UIManager;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
+import com.datacoper.locacaoequipamentos.client.tablemodel.MyModelTable;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public abstract class FormPadraoPesquisa extends JDialog {
+public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 
 	private long tempo;
 
@@ -95,7 +97,6 @@ public abstract class FormPadraoPesquisa extends JDialog {
 		panelCampos.add(panelComboBox, gbc_panelComboBox);
 
 		FieldPesquisa = new JTextField();
-		
 
 		GridBagConstraints gbc_FieldPesquisa = new GridBagConstraints();
 		gbc_FieldPesquisa.gridwidth = 2;
@@ -129,23 +130,24 @@ public abstract class FormPadraoPesquisa extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new TitledBorder(null, "Pesquisa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelTable.add(scrollPane);
-		
-		pesquisar(null);
-		table = new JTable(getTableModel());
+
+		table = new JTable(getTableModel(pesquisar(null)));
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					getSelectedRow(table.getSelectedRow());
+					dispose();
 				}
 			}
 		});
 		TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
 		table.setRowSorter(sorter);
-//		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-//		sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
-//		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-//		sorter.setSortKeys(sortKeys);
+		// List<RowSorter.SortKey> sortKeys = new
+		// ArrayList<RowSorter.SortKey>();
+		// sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING));
+		// sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		// sorter.setSortKeys(sortKeys);
 
 		scrollPane.setViewportView(table);
 		panelComboBox.add(getComboBox());
@@ -154,8 +156,8 @@ public abstract class FormPadraoPesquisa extends JDialog {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String pesquisa = FieldPesquisa.getText();
-				pesquisar(pesquisa);
-				table.setModel((getTableModel()));
+
+				table.setModel((getTableModel(pesquisar(pesquisa))));
 				table.revalidate();
 				table.repaint();
 			}
@@ -179,12 +181,19 @@ public abstract class FormPadraoPesquisa extends JDialog {
 
 	public abstract void cancelar();
 
-	public abstract void getSelectedRow(int selectedRow);
+	public T getSelectedRow(int selectedRow) {
+		
+		return (T)((MyModelTable) table.getModel()).get(selectedRow);
+	}
 
 	public abstract JComboBox getComboBox();
 
-	public abstract TableModel getTableModel();
+	public abstract TableModel getTableModel(List lista);
 
-	public abstract void pesquisar(String pesquisa);
+	public abstract List pesquisar(String pesquisa);
 
+	public T abrirPesquisa() {
+		setVisible(true);
+		return getSelectedRow(table.getSelectedRow());
+	}
 }

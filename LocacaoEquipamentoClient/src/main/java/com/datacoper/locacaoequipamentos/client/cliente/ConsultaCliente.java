@@ -463,14 +463,14 @@ public class ConsultaCliente extends javax.swing.JFrame {
         CampoComplemento_Cliente1.setText(cliente.getEndereco().getComplemento());
         CampoDataCad_Cliente.setText(cliente.getDataCadastro());
         CampoEmail_Cliente.setText(cliente.getEmail());
-        CampoEstadocivil.setText(cliente.getEstadoCivil());
+        CampoEstadocivil.setText(cliente.getEstadoCivil().getDescricao());
         CampoID_Cliente.setText(String.valueOf(cliente.getIdCliente()));
         CampoNascimento.setText(cliente.getDataNascimento());
         CampoNome_Cliente.setText(cliente.getNome());
         CampoNumero_Cliente.setText(String.valueOf(cliente.getEndereco().getNumero()));
         CampoRG_Cliente.setText(cliente.getRg());
         CampoRua_Cliente.setText(cliente.getEndereco().getRua());
-        CampoSexo.setText(cliente.getSexo());
+        CampoSexo.setText(cliente.getSexo().getDescricao());
         CampoTelefone_Cliente.setText(cliente.getTelefone());
         Campoestado.setText(cliente.getEndereco().getEstado());
 

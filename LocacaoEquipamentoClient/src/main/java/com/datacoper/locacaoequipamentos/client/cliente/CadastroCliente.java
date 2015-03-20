@@ -5,23 +5,21 @@
  */
 package com.datacoper.locacaoequipamentos.client.cliente;
 
-import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
-import com.datacoper.locacaoequipamentos.common.model.Cliente;
-import com.datacoper.locacaoequipamentos.common.model.Endereco;
-import com.datacoper.locacaoequipamentos.common.service.ClienteService;
-import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
-
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+
+import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
+import com.datacoper.locacaoequipamentos.common.model.Cliente;
+import com.datacoper.locacaoequipamentos.common.model.Endereco;
+import com.datacoper.locacaoequipamentos.common.model.enums.EstadoCivil;
+import com.datacoper.locacaoequipamentos.common.model.enums.Sexo;
+import com.datacoper.locacaoequipamentos.common.service.ClienteService;
+import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
 
 /**
  *
@@ -625,7 +623,9 @@ public class CadastroCliente extends javax.swing.JInternalFrame {
 	}// GEN-LAST:event_estadoCivilClienteFieldActionPerformed
 
 	private void adicionarButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_adicionarButtonActionPerformed
-		String cpf, telefone, nome, rg, sexo, estadoCivil, dataCadastro, dataNascimento, email = null;
+		String cpf, telefone, nome, rg, dataCadastro, dataNascimento, email = null;
+		Sexo sexo;
+		EstadoCivil estadoCivil;
 		String cidade, rua, bairro, estado, cep, complemento = null;
 		int numero, id = 0;
 		Cliente c = new Cliente();
@@ -650,8 +650,8 @@ public class CadastroCliente extends javax.swing.JInternalFrame {
 			nome = nomeClienteField.getText();
 			rg = rgClienteField.getText();
 			email = emailClienteField.getText();
-			sexo = (String) sexoClienteField.getSelectedItem();
-			estadoCivil = (String) estadoCivilClienteField.getSelectedItem();
+			sexo = (Sexo) sexoClienteField.getSelectedItem();
+			estadoCivil = (EstadoCivil) estadoCivilClienteField.getSelectedItem();
 			dataCadastro = formatarDate.format(date);
 			cidade = cidadeClienteField.getText();
 			rua = ruaClienteField.getText();

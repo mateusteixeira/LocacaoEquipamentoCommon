@@ -123,4 +123,6 @@ public abstract class FormPadrao extends JInternalFrame {
 	public abstract void limparCampos();
 
 	public abstract void habilitarCampos();
+	
+	public abstract void excluir();
 }

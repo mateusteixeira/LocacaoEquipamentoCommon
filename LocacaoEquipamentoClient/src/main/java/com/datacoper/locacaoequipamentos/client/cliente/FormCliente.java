@@ -1,12 +1,19 @@
 package com.datacoper.locacaoequipamentos.client.cliente;
 
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
+
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import static javax.swing.JOptionPane.*;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
@@ -16,6 +23,8 @@ import com.datacoper.locacaoequipamentos.client.util.ViewMethods;
 import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.model.Endereco;
+import com.datacoper.locacaoequipamentos.common.model.enums.EstadoCivil;
+import com.datacoper.locacaoequipamentos.common.model.enums.Sexo;
 import com.datacoper.locacaoequipamentos.common.service.ClienteService;
 import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
 
@@ -121,9 +130,13 @@ public class FormCliente extends FormPadrao {
 		panelPessoa.add(lblNewLabel_2);
 
 		sexoClienteBox = new JComboBox();
-		sexoClienteBox.setModel(new DefaultComboBoxModel(new String[] { "Masculino", "Feminino" }));
-		sexoClienteBox.setSelectedIndex(0);
-		sexoClienteBox.setMaximumRowCount(3);
+		for (Sexo sexo : Sexo.values()) {
+			sexoClienteBox.addItem(sexo);
+		}
+		// sexoClienteBox.setModel(new DefaultComboBoxModel(new String[] {
+		// "Masculino", "Feminino" }));
+		// sexoClienteBox.setSelectedIndex(0);
+		// sexoClienteBox.setMaximumRowCount(3);
 		sexoClienteBox.setBounds(356, 77, 86, 20);
 		panelPessoa.add(sexoClienteBox);
 
@@ -132,9 +145,13 @@ public class FormCliente extends FormPadrao {
 		panelPessoa.add(lblEstadoCivil);
 
 		estadoCivilClienteBox = new JComboBox();
-		estadoCivilClienteBox.setModel(new DefaultComboBoxModel(new String[] { "Solteiro(a)", "Casado(a)", " Viúvo(a)", " Divorciado(a)" }));
-		estadoCivilClienteBox.setSelectedIndex(0);
-		estadoCivilClienteBox.setMaximumRowCount(3);
+		for (EstadoCivil estadoCivil : EstadoCivil.values()) {
+			estadoCivilClienteBox.addItem(estadoCivil);
+		}
+		// estadoCivilClienteBox.setModel(new DefaultComboBoxModel(new String[]
+		// { "Solteiro(a)", "Casado(a)", " Viúvo(a)", " Divorciado(a)" }));
+		// estadoCivilClienteBox.setSelectedIndex(0);
+		// estadoCivilClienteBox.setMaximumRowCount(3);
 		estadoCivilClienteBox.setBounds(77, 109, 92, 20);
 		panelPessoa.add(estadoCivilClienteBox);
 		try {
@@ -286,14 +303,12 @@ public class FormCliente extends FormPadrao {
 	}
 
 	private void abrirFormBuscaCliente() {
-		FormBuscaCliente buscaCliente = new FormBuscaCliente();
-		buscaCliente.setVisible(true);
+		atualizarCliente((Cliente) new FormBuscaCliente().abrirPesquisa());
 	}
 
 	@Override
 	public void limparCampos() {
 		limpaCampos();
-
 	}
 
 	@Override
@@ -328,13 +343,37 @@ public class FormCliente extends FormPadrao {
 	}
 
 	private void atualizarCliente(Cliente cliente) {
-
+		ViewMethods.chaveadorCampos(panelEndereco, true);
+		ViewMethods.chaveadorCampos(panelPessoa, true);
+		idClienteField.setText(String.valueOf(cliente.getIdCliente()));
+		cpfClienteField.setText(cliente.getCpf());
+		telefoneClienteField.setText(cliente.getTelefone());
+		nomeClienteField.setText(cliente.getNome());
+		rgClienteField.setText(cliente.getRg());
+		emailClienteField.setText(cliente.getEmail());
+		dataCadastroField.setText(cliente.getDataCadastro());
+		// cidadeClienteField.setText(cliente.getEndereco().getCidade());
+		// cepClienteField.setText(cliente.getEndereco().getCep());
+		// ruaClienteField.setText(cliente.getEndereco().getRua());
+		// complementoClienteField.setText(cliente.getEndereco().getComplemento());
+		// numeroClienteField.setText(String.valueOf(cliente.getEndereco().getNumero()));
+		sexoClienteBox.setSelectedItem(cliente.getSexo());
+		estadoCivilClienteBox.setSelectedItem(cliente.getEstadoCivil());
+		estadoClienteBox.setSelectedIndex(15);
+		bairroClienteField.setText("");
+		String formato = "dd/MM/yyyy";
+		Date DataTemp = new Date();
+		try {
+			DataTemp = new SimpleDateFormat(formato).parse(cliente.getDataNascimento());
+		} catch (ParseException ex) {
+			Logger.getLogger(CadastroCliente.class.getName()).log(Level.SEVERE, null, ex);
+		}
+		nascimentoClienteField.setDate(DataTemp);
 	}
 
 	private Cliente obterCliente() {
 		Date data = new Date();
 		data = nascimentoClienteField.getDate();
-
 		Cliente cliente = new Cliente();
 		cliente.setNome(nomeClienteField.getText());
 		cliente.setCpf(cpfClienteField.getText());
@@ -342,8 +381,8 @@ public class FormCliente extends FormPadrao {
 		cliente.setDataNascimento(formatarDate.format(data));
 		cliente.setTelefone(telefoneClienteField.getText());
 		cliente.setEmail(emailClienteField.getText());
-		cliente.setSexo(sexoClienteBox.getSelectedItem().toString());
-		cliente.setEstadoCivil(estadoCivilClienteBox.getSelectedItem().toString());
+		cliente.setSexo((Sexo) (sexoClienteBox.getSelectedItem()));
+		cliente.setEstadoCivil((EstadoCivil) estadoCivilClienteBox.getSelectedItem());
 		Endereco endereco = new Endereco();
 		endereco.setCidade(cidadeClienteField.getText());
 		endereco.setRua(ruaClienteField.getText());
@@ -361,33 +400,7 @@ public class FormCliente extends FormPadrao {
 	public void limpaCampos() {
 		ViewMethods.limparCampos(panelEndereco);
 		ViewMethods.limparCampos(panelPessoa);
-		// nascimentoClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
-		// java.awt.Color(153, 153, 153)));
-		// telefoneClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
-		// java.awt.Color(153, 153, 153)));
-		// cpfClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
-		// java.awt.Color(153, 153, 153)));
-		// cepClienteField.setBorder(javax.swing.BorderFactory.createLineBorder(new
-		// java.awt.Color(153, 153, 153)));
-		// idClienteField.setText("");
-		// cpfClienteField.setText("");
-		// telefoneClienteField.setText("");
-		// nomeClienteField.setText("");
-		// rgClienteField.setText("");
-		// emailClienteField.setText("");
-		// dataCadastroField.setText("");
-		// cidadeClienteField.setText("");
-		// cepClienteField.setText("");
-		// ruaClienteField.setText("");
-		// complementoClienteField.setText("");
-		// numeroClienteField.setText("");
-		// bairroClienteField.setText("");
-		// dataCadastroField.setText(formatarDate.format(date));
-		// sexoClienteBox.setSelectedIndex(0);
-		// estadoCivilClienteBox.setSelectedIndex(1);
-		// estadoClienteBox.setSelectedIndex(15);
-		// bairroClienteField.setText("");
-		// nascimentoClienteField.cleanup();
+
 	}
 
 	public ClienteService getClienteService() {
@@ -401,8 +414,14 @@ public class FormCliente extends FormPadrao {
 	public void setClienteService(ClienteService clienteService) {
 		this.clienteService = clienteService;
 	}
-	
-	public static void setCliente(Cliente cliente){
+
+	public static void setCliente(Cliente cliente) {
+
+	}
+
+	@Override
+	public void excluir() {
+		// TODO Auto-generated method stub
 		
 	}
 }
