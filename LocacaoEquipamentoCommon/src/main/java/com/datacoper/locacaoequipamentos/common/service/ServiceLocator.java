@@ -8,16 +8,21 @@ package com.datacoper.locacaoequipamentos.common.service;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
+import com.dc.locacaoequipamentocommon.util.MyServiceLoader;
+
 /**
  *
  * @author Java
  */
-public class ServiceLocator {
+public abstract class ServiceLocator {
     
+	public static <T> T loadService(Class<T> interfaceServico) {
+		return loadService(interfaceServico, null);
+	}
     
-    public <T> T loadService(Class<T> interfaceServico) {
+    public static <T> T loadService(Class<T> interfaceServico, Object paramtersConstruct) {
         T service = null;
-        ServiceLoader serviceLoader =  ServiceLoader.load(interfaceServico);
+        MyServiceLoader serviceLoader =  MyServiceLoader.load(interfaceServico, paramtersConstruct);
         Iterator<T> iterator = serviceLoader.iterator();
         if (iterator.hasNext()) 
             service = iterator.next();

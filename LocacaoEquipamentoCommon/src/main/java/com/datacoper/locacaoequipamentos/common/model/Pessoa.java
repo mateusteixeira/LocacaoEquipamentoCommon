@@ -5,6 +5,7 @@
  */
 package com.datacoper.locacaoequipamentos.common.model;
 
+import com.datacoper.locacaoequipamentos.common.annotation.ColumnTableSearch;
 import com.datacoper.locacaoequipamentos.common.model.enums.EstadoCivil;
 import com.datacoper.locacaoequipamentos.common.model.enums.Sexo;
 
@@ -14,13 +15,15 @@ import com.datacoper.locacaoequipamentos.common.model.enums.Sexo;
  */
 
 public class Pessoa {
-
+	@ColumnTableSearch(header="Nome", width=200)
 	private String nome;
 	private String rg;
+	@ColumnTableSearch(header="CPF", width=120)
 	private String cpf;
 	private EstadoCivil estadoCivil;
 	private Sexo sexo;
 	private String email;
+	@ColumnTableSearch(header="Telefone", width=80)
 	private String telefone;
 	private String dataNascimento;
 	private String dataCadastro;

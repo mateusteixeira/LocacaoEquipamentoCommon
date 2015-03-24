@@ -5,12 +5,14 @@
  */
 package com.datacoper.locacaoequipamentos.common.model;
 
+import com.datacoper.locacaoequipamentos.common.annotation.ColumnTableSearch;
+
 /**
  *
  * @author Java
  */
 public class Cliente extends Pessoa {
-
+	@ColumnTableSearch(header="Código", width=30)
     private Integer idCliente;
 
     public Cliente() { //Construtor

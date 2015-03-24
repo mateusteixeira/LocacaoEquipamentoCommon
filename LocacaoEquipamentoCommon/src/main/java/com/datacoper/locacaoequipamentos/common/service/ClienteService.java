@@ -9,14 +9,13 @@ import java.util.List;
 
 import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
-import com.datacoper.locacaoequipamentos.common.model.Locacao;
 
 /**
  *
  * @author Java
  */
 
-public interface ClienteService {
+public interface ClienteService extends Service {
 
 	void gravar(Cliente cliente) throws BusinessException;
 
@@ -26,8 +25,6 @@ public interface ClienteService {
 
 	//
 	List<Cliente> encontrarTodosClientes();
-
-	List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa);
 
 	// List<Cliente> buscaClienteAll(int ordem, int ascDesc);
 	//
