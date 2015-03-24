@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.datacoper.locacaoequipamentos.persistence.dao;
+package com.datacoper.locacaoequipamentos.persistence.dao.interfaces;
 
 /**
  *
  * @author Java
  */
-public interface ManutencaoDAO {
+public interface ManutencaoDAO extends DAO {
     
 }

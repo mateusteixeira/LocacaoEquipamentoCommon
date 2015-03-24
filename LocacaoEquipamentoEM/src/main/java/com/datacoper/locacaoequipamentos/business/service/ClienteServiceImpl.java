@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.datacoper.locacaoequipamentos.business.cliente;
+package com.datacoper.locacaoequipamentos.business.service;
 
 import com.datacoper.locacaoequipamentos.common.exception.BusinessException;
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
 import com.datacoper.locacaoequipamentos.common.model.Locacao;
 import com.datacoper.locacaoequipamentos.common.service.ClienteService;
-import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;
-import com.datacoper.locacaoequipamentos.persistence.dao.DAOFactory;
-import com.datacoper.locacaoequipamentos.persistence.dao.LocacaoDAO;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.ClienteDAO;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.DAOFactory;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.LocacaoDAO;
 import com.datacoper.locacaoequipamentos.persistence.dao.jdbc.JdbcDAOFactory;
 import com.datacoper.locacaoequipamentos.persistence.exception.PersistenceException;
 import com.datacoper.locacaoequipamentos.persistence.transaction.ITransaction;
@@ -32,12 +32,14 @@ import java.util.regex.Pattern;
 public class ClienteServiceImpl implements ClienteService {
 
 	private ClienteDAO clienteDAO;
-
-	public ClienteDAO getClienteDAO() {
-		if (clienteDAO == null) {
-			clienteDAO = DAOFactory.getInstance().createDAO(ClienteDAO.class);
+	
+	public ClienteServiceImpl() {
+		try {
+			clienteDAO = DAOFactory.getInstance(ClienteDAO.class);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		return clienteDAO;
+
 	}
 
 	@Override
@@ -51,9 +53,9 @@ public class ClienteServiceImpl implements ClienteService {
 			transaction.beginTransaction();
 			if (cliente.getIdCliente() == null) {// update
 				atualizarIDCliente(cliente);
-				getClienteDAO().insert(cliente);
+				clienteDAO.insert(cliente);
 			} else {
-				getClienteDAO().update(cliente);
+				clienteDAO.update(cliente);
 			}
 			transaction.commit();
 
@@ -78,7 +80,7 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	private void atualizarIDCliente(Cliente cliente) {
-		Integer idCliente = getClienteDAO().nextId();
+		Integer idCliente = clienteDAO.nextId();
 		cliente.setIdCliente(idCliente);
 	}
 
@@ -103,13 +105,13 @@ public class ClienteServiceImpl implements ClienteService {
 
 	@Override
 	public List<Cliente> encontrarTodosClientes() {
-		List<Cliente> clientes = getClienteDAO().encontrarClienteAll();
+		List<Cliente> clientes = clienteDAO.encontrarClienteAll();
 		return clientes;
 	}
 
 	@Override
-	public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa) {
-		return getClienteDAO().encontrarClienteEsp(campoPesquisar, pesquisa);
+	public List<Cliente> pesquisar(String campoPesquisar, String pesquisa) {
+		return clienteDAO.pesquisar(campoPesquisar, pesquisa);
 	}
 
 	@Override
@@ -120,7 +122,7 @@ public class ClienteServiceImpl implements ClienteService {
 		try {
 
 			transaction.beginTransaction();
-			getClienteDAO().excluir(cliente);
+			clienteDAO.excluir(cliente);
 			transaction.commit();
 
 		} catch (Exception e) {
@@ -169,7 +171,7 @@ public class ClienteServiceImpl implements ClienteService {
 	// throw new RuntimeException("Cliente com Locação!");
 	// } else {
 	//
-	// if (getClienteDAO().excluiCliente(cliente)) {
+	// if (clienteDAO.excluiCliente(cliente)) {
 	// return true;
 	// } else {
 	// return false;
@@ -196,7 +198,7 @@ public class ClienteServiceImpl implements ClienteService {
 	// RuntimeException("Por favor, preencha o campo Telefone de forma correta");
 	// }
 	//
-	// if (getClienteDAO().updateCliente(cliente)) {
+	// if (clienteDAO.updateCliente(cliente)) {
 	// return true;
 	// } else {
 	// return false;
@@ -222,7 +224,7 @@ public class ClienteServiceImpl implements ClienteService {
 	// public List<Cliente> buscaClienteAll(int ordem, int ascDesc) {
 	// List<Cliente> lista;
 	//
-	// lista = getClienteDAO().buscaAll(ordem, ascDesc);
+	// lista = clienteDAO.buscaAll(ordem, ascDesc);
 	//
 	// return lista;
 	// }
@@ -233,7 +235,7 @@ public class ClienteServiceImpl implements ClienteService {
 	//
 	// List<Cliente> lista;
 	//
-	// lista = getClienteDAO().buscaEsp(ordem, ascDesc, id, cont);
+	// lista = clienteDAO.buscaEsp(ordem, ascDesc, id, cont);
 	//
 	// return lista;
 	// }

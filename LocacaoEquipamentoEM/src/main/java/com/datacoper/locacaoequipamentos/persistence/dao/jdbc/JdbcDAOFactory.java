@@ -5,9 +5,9 @@
  */
 package com.datacoper.locacaoequipamentos.persistence.dao.jdbc;
 
-import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;
-import com.datacoper.locacaoequipamentos.persistence.dao.DAOFactory;
-import com.datacoper.locacaoequipamentos.persistence.dao.LocacaoDAO;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.ClienteDAO;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.DAOFactory;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.LocacaoDAO;
 
 import java.sql.Connection;
 import java.util.HashMap;

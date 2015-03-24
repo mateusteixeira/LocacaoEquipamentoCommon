@@ -6,7 +6,8 @@
 package com.datacoper.locacaoequipamentos.persistence.dao.jdbc;
 
 import com.datacoper.locacaoequipamentos.common.model.Locacao;
-import com.datacoper.locacaoequipamentos.persistence.dao.LocacaoDAO;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.LocacaoDAO;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -31,6 +32,12 @@ public class LocacaoDAOJdbc implements LocacaoDAO{
     static final String dataLocacao = "datalocacao";
     static final String total = "total";
     static final String valorPago = "valorpago";
+    
+	@Override
+	public List pesquisar(String filtro, String valorFiltro) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 //    public boolean insert(Locacao locar) throws SQLException, Exception {
 //        ResultSet rs2;

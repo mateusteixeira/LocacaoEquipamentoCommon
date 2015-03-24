@@ -5,7 +5,8 @@
  */
 package com.datacoper.locacaoequipamentos.util;
 
-import com.datacoper.locacaoequipamentos.persistence.dao.DAOFactory;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.DAOFactory;
+
 import java.io.IOException;
 import java.util.Properties;
 

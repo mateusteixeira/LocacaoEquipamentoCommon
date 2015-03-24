@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.datacoper.locacaoequipamentos.common.model.Cliente;
-import com.datacoper.locacaoequipamentos.persistence.dao.ClienteDAO;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.ClienteDAO;
 import com.datacoper.locacaoequipamentos.vohandler.ClienteEnderecoHandler;
 import com.dc.locacaoequipamentocommon.vo.ClienteEnderecoVO;
 
@@ -99,26 +99,26 @@ public class ClienteDAOJdbc extends GenericDAOJdbc implements ClienteDAO {
 	}
 
 	@Override
-	public List<Cliente> encontrarClienteEsp(int campoPesquisar, String pesquisa) {
+	public List<Cliente> pesquisar(String campoPesquisar, String pesquisa) {
 		String tag = null;
 		String operador = null;
 		switch (campoPesquisar) {
-		case 0: {
+		case "nome": {
 			tag = nome;
 			operador = "LIKE";
 			break;
 		}
-		case 1: {
+		case "codigo": {
 			tag = idCliente;
 			operador = "=";
 			break;
 		}
-		case 2: {
+		case "cpf": {
 			tag = cpf;
 			operador = "LIKE";
 			break;
 		}
-		case 3: {
+		case "telefone": {
 			tag = telefone;
 			operador = "LIKE";
 			break;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.datacoper.locacaoequipamentos.persistence.dao;
+package com.datacoper.locacaoequipamentos.persistence.dao.interfaces;
 
 import com.datacoper.locacaoequipamentos.common.model.Locacao;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Java
  */
-public interface LocacaoDAO {
+public interface LocacaoDAO extends DAO {
 
 //    public List<Locacao> buscaLocacoesAll() throws Exception;
 
