@@ -33,6 +33,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JRadioButton;
@@ -44,17 +45,37 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
 import com.datacoper.locacaoequipamentos.client.tablemodel.MyModelTable;
+import com.datacoper.locacaoequipamentos.client.tablemodel.MyModelTablePesquisa;
+import com.datacoper.locacaoequipamentos.common.service.Service;
+import com.datacoper.locacaoequipamentos.common.service.ServiceLocator;
+import com.datacoper.locacaoequipamentos.persistence.dao.interfaces.DAOFactory;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
+public class FormPadraoPesquisa<T> extends JDialog {
 
-	private long tempo;
-
-	public FormPadraoPesquisa() {
+	private Service service;
+	private String[] filtros;
+	private Class<T> classPesquisa;
+	
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public FormPadraoPesquisa(Class<T> classPesquisa) {
+		this(ServiceLocator.loadService(Service.class, classPesquisa), classPesquisa);
+	}
+	
+	public FormPadraoPesquisa(Service service, Class<T> classPesquisa) {
+		this.classPesquisa = classPesquisa;
+		this.service = service;
+		
+		initComponents();
+	}
+	
+	private void initComponents() {
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
 		JPanel panelFundo = new JPanel();
@@ -76,7 +97,7 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		lblPesquisarPor.setPreferredSize(new Dimension(80, 14));
 		lblPesquisarPor.setAlignmentX(Component.CENTER_ALIGNMENT);
 		GridBagConstraints gbc_lblPesquisarPor = new GridBagConstraints();
-		gbc_lblPesquisarPor.anchor = GridBagConstraints.WEST;
+		gbc_lblPesquisarPor.anchor = GridBagConstraints.EAST;
 		gbc_lblPesquisarPor.ipady = 2;
 		gbc_lblPesquisarPor.ipadx = 2;
 		gbc_lblPesquisarPor.fill = GridBagConstraints.VERTICAL;
@@ -84,26 +105,23 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		gbc_lblPesquisarPor.gridx = 0;
 		gbc_lblPesquisarPor.gridy = 0;
 		panelCampos.add(lblPesquisarPor, gbc_lblPesquisarPor);
-
-		panelComboBox = new JPanel();
-		panelComboBox.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelComboBox.setBackground(UIManager.getColor("control"));
-		panelComboBox.setSize(new Dimension(50, 50));
-		panelComboBox.setPreferredSize(new Dimension(300, 20));
-		GridBagConstraints gbc_panelComboBox = new GridBagConstraints();
-		gbc_panelComboBox.anchor = GridBagConstraints.WEST;
-		gbc_panelComboBox.fill = GridBagConstraints.VERTICAL;
-		gbc_panelComboBox.insets = new Insets(0, 0, 5, 0);
-		gbc_panelComboBox.gridx = 1;
-		gbc_panelComboBox.gridy = 0;
-		panelCampos.add(panelComboBox, gbc_panelComboBox);
+		
+		comboBox = new JComboBox();
+		comboBox.setPreferredSize(new Dimension(200, 20));
+		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.fill = GridBagConstraints.VERTICAL;
+		gbc_comboBox.anchor = GridBagConstraints.WEST;
+		gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+		gbc_comboBox.gridx = 1;
+		gbc_comboBox.gridy = 0;
+		panelCampos.add(comboBox, gbc_comboBox);
+		comboBox.addItem("TEste");
 
 		FieldPesquisa = new JTextField();
 
 		GridBagConstraints gbc_FieldPesquisa = new GridBagConstraints();
 		gbc_FieldPesquisa.gridwidth = 2;
 		gbc_FieldPesquisa.fill = GridBagConstraints.BOTH;
-		gbc_FieldPesquisa.insets = new Insets(0, 0, 0, 5);
 		gbc_FieldPesquisa.gridx = 0;
 		gbc_FieldPesquisa.gridy = 1;
 		panelCampos.add(FieldPesquisa, gbc_FieldPesquisa);
@@ -139,7 +157,7 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		scrollPane.setBorder(new TitledBorder(null, "Pesquisa", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelTable.add(scrollPane);
 
-		table = new JTable(getTableModel(pesquisar(null)));
+		table = new JTable(new MyModelTablePesquisa<T>(pesquisar()));
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -158,15 +176,13 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		// sorter.setSortKeys(sortKeys);
 
 		scrollPane.setViewportView(table);
-		
-		panelComboBox.add(getComboBox());
 
 		FieldPesquisa.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String pesquisa = FieldPesquisa.getText();
 
-				table.setModel((getTableModel(pesquisar(pesquisa))));
+				//table.setModel((getTableModel(pesquisar(pesquisa))));
 				table.revalidate();
 				table.repaint();
 			}
@@ -175,7 +191,6 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		setResizable(false);
 		setLocationRelativeTo(null);
 		setModal(true);
-
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -184,7 +199,7 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 	private JTextField FieldPesquisa;
 	private JTable table;
 	private ButtonGroup buttonGroup;
-	private JPanel panelComboBox;
+	private JComboBox comboBox;
 
 	public void ok() {
 		dispose();
@@ -199,11 +214,11 @@ public abstract class FormPadraoPesquisa<T extends Object> extends JDialog {
 		return (T) ((MyModelTable) table.getModel()).get(selectedRow);
 	}
 
-	public abstract JComboBox getComboBox();
+	//public abstract TableModel getTableModel(List lista);
 
-	public abstract TableModel getTableModel(List lista);
-
-	public abstract List pesquisar(String pesquisa);
+	public List<T> pesquisar() {
+		return service.pesquisar(comboBox.getSelectedItem().toString(), FieldPesquisa.getText());
+	}
 
 	public T abrirPesquisa() {
 		setVisible(true);

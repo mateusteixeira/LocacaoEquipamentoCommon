@@ -302,7 +302,7 @@ public class FormCadastroCliente extends FormPadraoCadastro {
 	}
 
 	public void abrirFormBuscaCliente() {
-		atualizarCliente((Cliente) new FormBuscaCliente().abrirPesquisa());
+		//atualizarCliente((Cliente) new FormBuscaCliente().abrirPesquisa());
 	}
 
 	@Override
@@ -404,8 +404,7 @@ public class FormCadastroCliente extends FormPadraoCadastro {
 
 	public ClienteService getClienteService() {
 		if (clienteService == null) {
-			clienteService = new ServiceLocator().loadService(ClienteService.class);
-			System.out.println("ClienteService: " + clienteService);
+			//clienteService = new ServiceLocator().loadService(ClienteService.class);
 		}
 		return clienteService;
 	}

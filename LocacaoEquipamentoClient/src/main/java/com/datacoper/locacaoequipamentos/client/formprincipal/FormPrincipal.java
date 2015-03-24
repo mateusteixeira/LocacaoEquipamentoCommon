@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
@@ -19,12 +20,15 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.datacoper.locacaoequipamentos.client.cliente.FormCadastroCliente;
+import com.datacoper.locacaoequipamentos.client.formspadrao.FormPadraoPesquisa;
+import com.datacoper.locacaoequipamentos.common.model.Cliente;
 
 public class FormPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane;
+	private JDesktopPane desktopPane;
 
 	/**
 	 * Launch the application.
@@ -46,6 +50,10 @@ public class FormPrincipal extends JFrame {
 	 * Create the frame.
 	 */
 	public FormPrincipal() {
+		initComponents();
+	}
+	
+	public void initComponents() {
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
@@ -67,7 +75,7 @@ public class FormPrincipal extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
-		final JDesktopPane desktopPane = new JDesktopPane();
+		desktopPane = new JDesktopPane();
 		desktopPane.setBorder(null);
 		desktopPane.setBackground(SystemColor.control);
 		contentPane.add(desktopPane);
@@ -97,22 +105,21 @@ public class FormPrincipal extends JFrame {
 		JMenuItem mntmClientes = new JMenuItem("Clientes");
 		mntmClientes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JInternalFrame ji = new FormCadastroCliente();
-				((FormCadastroCliente) ji).abrirFormBuscaCliente();
-				((FormCadastroCliente) ji).habilitarCampos();
-				ji.setVisible(false);
-				desktopPane.add(ji);
-
-				try {
-					ji.setMaximum(true);
-				} catch (PropertyVetoException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				ji.setVisible(true);
+				abreTelaPesquisa(new FormPadraoPesquisa<Cliente>(Cliente.class));
 			}
 		});
 		mnConsultas.add(mntmClientes);
-
+	}
+	
+	private void abreTela(JInternalFrame ji) {
+		((FormCadastroCliente) ji).abrirFormBuscaCliente();
+		((FormCadastroCliente) ji).habilitarCampos();
+		ji.setVisible(false);
+		desktopPane.add(ji);
+	}
+	
+	private <T> void abreTelaPesquisa(FormPadraoPesquisa<T> form) {
+		form.abrirPesquisa();
+		form.setVisible(true);
 	}
 }
